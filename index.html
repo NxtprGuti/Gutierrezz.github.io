@@ -1,0 +1,3458 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Métodos Numéricos FIEE</title>
+
+  <style>
+    :root {
+      --azul: #173653;
+      --azul-hover: #254d70;
+      --dorado: #c5a04b;
+      --dorado-claro: #f5e8c8;
+      --blanco: #ffffff;
+      --fondo: #f7f8fa;
+      --texto: #263442;
+      --secundario: #687583;
+      --borde: #dce2e8;
+      --rojo: #9e3038;
+      --verde: #426a58;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: transparent;
+  color: var(--texto);
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+/* Fondo fotográfico con efecto de marca de agua */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      rgba(247, 248, 250, 0.55),
+      rgba(247, 248, 250, 0.55)
+    ),
+    url("img/FACU-FIEE.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  z-index: -1;
+  pointer-events: none;
+}
+
+
+    /* Encabezado institucional */
+    header {
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 3px solid var(--dorado);
+      padding: 18px 7%;
+    }
+
+    .encabezado {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .logo {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    
+    .logo-sanmarcos {
+     width: 150px;
+     max-width: 25%;
+      height: 65px;
+      object-fit: contain;
+     margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .identidad h1 {
+      margin: 0;
+      color: var(--azul);
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 700;
+    }
+
+    .identidad p {
+      margin: 7px 0 0;
+      color: var(--secundario);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 38px auto;
+      padding: 0 24px;
+    }
+
+    /* Presentación */
+    .bienvenida {
+      margin-bottom: 30px;
+      padding: 28px;
+      background: rgba(255, 255, 255, 0.87);
+      border-left: 5px solid var(--azul);
+      border-radius: 5px;
+    }
+
+    .bienvenida h2 {
+      color: var(--azul);
+      font-size: 27px;
+      margin: 0 0 10px;
+    }
+
+    .bienvenida p {
+      color: var(--secundario);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .etiqueta {
+      color: var(--rojo);
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    /* Paneles principales */
+    .seccion {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--borde);
+      border-radius: 10px;
+      padding: 26px;
+      margin-bottom: 22px;
+      box-shadow: 0 3px 12px rgba(23, 54, 83, 0.035);
+    }
+
+    .seccion h3 {
+      color: var(--azul);
+      margin: 0 0 10px;
+      font-size: 19px;
+    }
+
+    .descripcion {
+      color: var(--secundario);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Zona dorada de carga */
+    .zona-archivo {
+      margin-top: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      background: var(--dorado-claro);
+      border: 1px solid #dfc782;
+      border-radius: 8px;
+    }
+
+    .zona-archivo strong {
+      color: #493714;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto;
+      font-size: 14px;
+      color: #493714;
+    }
+
+    /* Personaliza el botón interno del selector */
+    input[type="file"]::file-selector-button {
+      background: #ffffff;
+      color: var(--azul);
+      border: 1px solid var(--azul);
+      border-radius: 5px;
+      padding: 9px 14px;
+      margin-right: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: var(--azul-suave);
+    } 
+
+    button {
+      border: none;
+      border-radius: 6px;
+      background: var(--azul);
+      color: var(--blanco);
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--azul-hover);
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--rojo);
+      outline-offset: 3px;
+    }
+
+    #estado {
+      color: #66552f;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 0;
+      overflow-wrap: anywhere;
+    }
+
+    
+    /* Pie de página institucional */
+    .pie-institucional {
+      margin-top: 40px;
+      padding: 26px 20px;
+      text-align: center;
+      color: #ffffff;
+      background: #202b40;
+      border-top: 3px solid var(--dorado);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .pie-institucional p {
+      margin: 5px 0;
+    }
+
+    .pie-institucional strong {
+      color: #ffffff;
+    }
+
+    .pie-institucional .separador {
+      color: var(--dorado);
+      padding: 0 5px;
+    }
+
+    .linea-dorada {
+      width: 65px;
+      height: 2px;
+      background: var(--dorado);
+      margin: 16px auto;
+    }
+
+    .pie-institucional .universidad {
+      color: #d7dee8;
+      font-size: 13px;
+    }
+
+    
+    /* Herramientas para analizar los datos importados */
+    .controles-datos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 22px 0;
+    }
+
+    .campo-datos label {
+      display: block;
+      color: var(--azul);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    .campo-datos select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid var(--borde);
+      border-radius: 6px;
+      background: var(--blanco);
+      color: var(--texto);
+      font-size: 14px;
+    }
+
+    .campo-datos select:focus-visible {
+      outline: 3px solid var(--dorado);
+      outline-offset: 2px;
+    }
+
+    .resumen-datos {
+      margin: 16px 0;
+      padding: 12px 14px;
+      background: var(--azul-suave);
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .mensaje-datos {
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .tabla-contenedor {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 18px;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+    }
+
+    .tabla-datos {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #ffffff;
+    }
+
+    .tabla-datos th,
+    .tabla-datos td {
+      padding: 11px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--borde);
+      white-space: nowrap;
+    }
+
+    .tabla-datos th {
+      background: var(--azul);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .tabla-datos tbody tr:nth-child(even) {
+      background: #f7f8fa;
+    }
+
+    .tabla-datos tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .estado-correcto {
+      color: var(--verde);
+      font-weight: 600;
+    }
+
+    .estado-error {
+      color: var(--rojo);
+      font-weight: 600;
+    }
+
+    
+    /* Módulo de interpolación de Lagrange */
+    .metodo-lagrange {
+      margin-top: 22px;
+      padding: 22px;
+      background: #ffffff;
+      border: 1px solid var(--borde);
+      border-top: 4px solid var(--dorado);
+      border-radius: 8px;
+    }
+
+    .metodo-lagrange h4 {
+      margin: 0 0 10px;
+      color: var(--azul);
+      font-size: 18px;
+    }
+
+    .lagrange-formulario {
+      display: flex;
+      align-items: end;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .lagrange-formulario .campo-datos {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .lagrange-formulario input {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid var(--borde);
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .resultado-lagrange {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 6px;
+      background: var(--azul-suave);
+      overflow-wrap: anywhere;
+    }
+
+    .resultado-lagrange strong {
+      color: var(--azul);
+    }
+
+    .resultado-lagrange p {
+      margin: 7px 0 0;
+      line-height: 1.6;
+    }
+
+    .resultado-lagrange .valor-final {
+      color: var(--azul);
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 520px) {
+      .metodo-lagrange {
+        padding: 17px;
+      }
+
+      .lagrange-formulario .campo-datos {
+        min-width: 100%;
+      }
+    }
+
+
+    @media (max-width: 520px) {
+      .controles-datos {
+        grid-template-columns: 1fr;
+      }
+
+      .tabla-datos th,
+      .tabla-datos td {
+        padding: 9px 11px;
+      }
+    }
+
+      /* Módulo de interpolación de Newton */
+      .metodo-newton {
+        margin-top: 22px;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid var(--borde);
+        border-top: 4px solid var(--azul);
+        border-radius: 8px;
+      }
+
+      .metodo-newton h4 {
+        margin: 0 0 10px;
+        color: var(--azul);
+        font-size: 18px;
+      }
+
+      .metodo-newton .lagrange-formulario {
+        display: flex;
+        align-items: end;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .metodo-newton .campo-datos {
+        flex: 1;
+        min-width: 180px;
+      }
+
+      .metodo-newton input {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      @media (max-width: 520px) {
+        .metodo-newton {
+          padding: 17px;
+        }
+
+        .metodo-newton .campo-datos {
+          min-width: 100%;
+        }
+      }
+
+    
+      /* ===== GRÁFICA DE LAGRANGE ===== */
+
+      .grafica-lagrange {
+        margin-top: 28px;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid #dce2e8;
+        border-top: 4px solid #173653;
+        border-radius: 12px;
+        box-shadow: 0 5px 18px rgba(23, 54, 83, 0.06);
+      }
+
+      .grafica-lagrange h3 {
+        margin: 0 0 8px;
+        color: #173653;
+        font-size: 1.25rem;
+      }
+
+      .grafica-lagrange > p {
+        color: #687583;
+        font-size: 0.94rem;
+        line-height: 1.6;
+      }
+
+      .grafica-lagrange .contenedor-canvas {
+        position: relative;
+        width: 100%;
+        height: 360px;
+        margin-top: 20px;
+      }
+
+      .grafica-lagrange .nota-grafica {
+        margin: 16px 0 0;
+        padding: 12px 14px;
+        background: #f5e8c8;
+        border-left: 3px solid #c5a04b;
+        border-radius: 6px;
+        color: #173653;
+      }
+
+      @media (max-width: 600px) {
+        .grafica-lagrange {
+          padding: 14px;
+        }
+
+        .grafica-lagrange .contenedor-canvas {
+          height: 290px;
+        }
+      }
+
+
+
+    /* Adaptación a celulares */
+    @media (max-width: 520px) {
+      header {
+        padding: 16px 18px;
+      }
+
+      .encabezado {
+        gap: 14px;
+      }
+
+      .logo {
+        width: 58px;
+        height: 58px;
+      }
+ 
+      .logo-sanmarcos {
+        width: 75px;
+        height: 48px;
+        max-width: 22%;
+      }
+
+      .identidad h1 {
+        font-size: 23px;
+      }
+
+      .identidad p {
+        font-size: 12px;
+      }
+
+      main {
+        padding: 0 16px;
+        margin-top: 24px;
+      }
+
+      .bienvenida {
+        padding: 21px;
+      }
+
+      .bienvenida h2 {
+        font-size: 23px;
+      }
+
+      .seccion {
+        padding: 20px;
+      }
+
+      .zona-archivo {
+        padding: 24px 14px;
+      }
+      
+      .pie-institucional {
+        padding: 24px 16px;
+        font-size: 13px;
+      }
+
+    }
+
+    /* Respeta la preferencia de movimiento reducido */
+    @media (prefers-reduced-motion: reduce) {
+      button {
+        transition: none;
+      }
+    }
+    
+    /* ===== PROCEDIMIENTO DE LAGRANGE ===== */
+
+    .procedimiento-lagrange {
+      margin-top: 24px;
+      padding: 24px;
+      background: #ffffff;
+      border: 1px solid #dce2e8;
+      border-top: 4px solid #c5a04b;
+      border-radius: 12px;
+      color: #263442;
+      box-shadow: 0 5px 18px rgba(23, 54, 83, 0.06);
+    }
+
+    .procedimiento-lagrange h3 {
+      margin: 0 0 18px;
+      color: #173653;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .procedimiento-lagrange h4 {
+      margin: 24px 0 14px;
+      color: #173653;
+      font-size: 1.05rem;
+    }
+
+    .procedimiento-lagrange p {
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .procedimiento-lagrange > p:first-of-type {
+      padding: 14px 16px;
+      background: #f5f7fa;
+      border-left: 3px solid #c5a04b;
+      border-radius: 6px;
+    }
+
+    .procedimiento-lagrange ol {
+      padding-left: 28px;
+      margin: 0;
+    }
+
+    .procedimiento-lagrange li {
+      margin: 12px 0;
+      padding: 14px 16px;
+      background: #f8f9fb;
+      border: 1px solid #e3e8ee;
+      border-radius: 8px;
+    }
+
+    .procedimiento-lagrange li::marker {
+      color: #173653;
+      font-weight: 700;
+    }
+
+    .procedimiento-lagrange li p {
+      margin: 5px 0;
+      font-size: 0.94rem;
+    }
+
+    .procedimiento-lagrange .valor-final {
+      margin-top: 22px;
+      padding: 16px;
+      background: #f5e8c8;
+      border: 1px solid #c5a04b;
+      border-radius: 8px;
+      color: #173653;
+      font-size: 1.08rem;
+      font-weight: 700;
+    }
+    
+    /* ===== PRESENTACIÓN DE FÓRMULAS MATEMÁTICAS ===== */
+
+    .procedimiento-lagrange .formula-matematica {
+      margin: 16px 0;
+      padding: 12px 8px;
+      background: #f8f9fb;
+      border: 1px solid #e3e8ee;
+      border-radius: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      text-align: center;
+    }
+
+    .procedimiento-lagrange .formula-matematica mjx-container {
+      max-width: 100%;
+      color: #173653;
+    }
+
+    .procedimiento-lagrange .formula-matematica mjx-container[display="true"] {
+      margin: 0.5em 0 !important;
+    }
+
+    .procedimiento-lagrange .lista-puntos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      margin: 12px 0 22px;
+      list-style: none;
+    }
+
+    .procedimiento-lagrange .lista-puntos li {
+      margin: 0;
+      padding: 8px 12px;
+      background: #f5e8c8;
+      border: 1px solid #e4d3a6;
+      border-radius: 6px;
+      color: #173653;
+      font-weight: 600;
+    }
+
+    .procedimiento-lagrange h4 {
+      margin-top: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #dce2e8;
+    }
+
+    .resultado-procedimiento {
+      margin-top: 24px;
+      padding: 14px;
+      background: #f5e8c8;
+      border: 1px solid #c5a04b;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .resultado-procedimiento p {
+      margin: 4px 0 12px;
+      color: #173653;
+      font-weight: 700;
+    }
+
+    .resultado-procedimiento .formula-matematica {
+      background: transparent;
+      border: none;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 600px) {
+      .procedimiento-lagrange {
+        padding: 14px;
+      }
+
+      .procedimiento-lagrange .formula-matematica {
+        text-align: left;
+      }
+    }
+    
+      /* Módulo de interpolación matricial */
+      .metodo-matricial {
+        margin-top: 22px;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid var(--borde);
+        border-top: 4px solid var(--dorado);
+        border-radius: 8px;
+      }
+
+      .metodo-matricial h4 {
+        margin: 0 0 10px;
+        color: var(--azul);
+        font-size: 18px;
+      }
+
+      .metodo-matricial .lagrange-formulario {
+        display: flex;
+        align-items: end;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .metodo-matricial .campo-datos {
+        flex: 1;
+        min-width: 180px;
+      }
+
+      .metodo-matricial input {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      .metodo-matricial .formula-matematica {
+        margin: 16px 0;
+        overflow-x: auto;
+      }
+
+      .metodo-matricial .matriz-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0 22px;
+      }
+
+      .metodo-matricial .matriz-tabla th,
+      .metodo-matricial .matriz-tabla td {
+        padding: 9px;
+        border: 1px solid var(--borde);
+        text-align: center;
+        white-space: nowrap;
+      }
+      
+      /* Presentación de las matrices con corchetes */
+      .metodo-matricial .matriz-tabla {
+        width: auto;
+        margin: 14px auto 22px;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-top: none;
+        border-bottom: none;
+        position: relative;
+      }
+
+      .metodo-matricial .matriz-tabla th,
+      .metodo-matricial .matriz-tabla td {
+        border-top: none;
+        border-bottom: none;
+        border-left: 1px solid var(--borde);
+        border-right: 1px solid var(--borde);
+      }
+
+      .metodo-matricial .matriz-tabla tr:first-child th,
+      .metodo-matricial .matriz-tabla tr:first-child td {
+        border-top: 2px solid var(--azul);
+      }
+
+      .metodo-matricial .matriz-tabla tr:last-child th,
+      .metodo-matricial .matriz-tabla tr:last-child td {
+        border-bottom: 2px solid var(--azul);
+      }
+
+      .metodo-matricial .matriz-tabla th {
+        background: var(--dorado-claro);
+        color: var(--azul);
+      }
+
+      @media (max-width: 520px) {
+        .metodo-matricial {
+          padding: 17px;
+        }
+
+        .metodo-matricial .campo-datos {
+          min-width: 100%;
+        }
+      }
+      
+      /* Matrices con presentación matemática */
+      .metodo-matricial .matriz-tabla {
+        width: auto;
+        margin: 14px auto 22px;
+        border-collapse: collapse;
+        border: none;
+      }
+
+      .metodo-matricial .matriz-tabla th,
+      .metodo-matricial .matriz-tabla td {
+        border: none !important;
+        background: transparent;
+        color: var(--texto);
+        text-align: center;
+        padding: 7px 12px;
+      }
+
+      /* Corchetes laterales de la matriz */
+      .metodo-matricial .matriz-tabla tbody {
+        position: relative;
+      }
+
+      /* Separación entre A e I en la matriz aumentada */
+      .metodo-matricial .matriz-tabla td.separador-matriz {
+        border-right: 2px solid var(--dorado) !important;
+        padding-right: 16px;
+      }
+
+      .metodo-matricial .matriz-tabla td.separador-matriz + td {
+        padding-left: 16px;
+      }
+
+      
+      /* Corchetes matemáticos para las matrices */
+      .metodo-matricial .matriz-tabla {
+        border: none;
+        border-radius: 0;
+        position: relative;
+        margin: 14px auto 22px;
+      }
+
+      .metodo-matricial .matriz-tabla::before,
+      .metodo-matricial .matriz-tabla::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 9px;
+        pointer-events: none;
+      }
+
+      .metodo-matricial .matriz-tabla::before {
+        left: -5px;
+        border-left: 2px solid var(--azul);
+        border-top: 2px solid var(--azul);
+        border-bottom: 2px solid var(--azul);
+      }
+
+      .metodo-matricial .matriz-tabla::after {
+        right: -5px;
+        border-right: 2px solid var(--azul);
+        border-top: 2px solid var(--azul);
+        border-bottom: 2px solid var(--azul);
+      }
+
+      /* Módulo de interpolación por splines */
+      .metodo-splines {
+        margin-top: 22px;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid var(--borde);
+        border-top: 4px solid var(--dorado);
+        border-radius: 8px;
+      }
+
+      .metodo-splines h4 {
+        margin: 0 0 10px;
+        color: var(--azul);
+        font-size: 18px;
+      }
+
+      .metodo-splines .lagrange-formulario {
+        display: flex;
+        align-items: end;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .metodo-splines .campo-datos {
+        flex: 1;
+        min-width: 180px;
+      }
+
+      .metodo-splines input {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      .metodo-splines .formula-matematica {
+        margin: 16px 0;
+        overflow-x: auto;
+      }
+
+      .metodo-splines .matriz-tabla {
+        width: auto;
+        margin: 14px auto 22px;
+        border-collapse: collapse;
+      }
+
+      .metodo-splines .matriz-tabla th,
+      .metodo-splines .matriz-tabla td {
+        padding: 9px;
+        border: 1px solid var(--borde);
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 520px) {
+        .metodo-splines {
+          padding: 17px;
+        }
+
+        .metodo-splines .campo-datos {
+          min-width: 100%;
+        }
+      }
+
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="encabezado">
+
+      <img
+        src="img/FIEE.png"
+        alt="Escudo de la Facultad de Ingeniería Electrónica y Eléctrica"
+        class="logo"
+      >
+
+      <div class="identidad">
+        <h1>Métodos Numéricos FIEE</h1>
+        <p>Facultad de Ingeniería Electrónica y Eléctrica · UNMSM</p>
+      </div>
+
+      <img
+        src="img/SANMARCOS.png"
+        alt="Logo de la Universidad Nacional Mayor de San Marcos"
+        class="logo-sanmarcos"
+      >
+
+    </div>
+  </header>
+
+  <main>
+
+    <section class="bienvenida">
+      <p class="etiqueta">UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS</p>
+
+      <h2>METODOS NUMERICOS</h2>
+
+      <p>
+        Herramienta académica para importar datos experimentales,
+        aplicar métodos numéricos y analizar resultados mediante
+        tablas y representaciones gráficas.
+      </p>
+    </section>
+
+    <section class="seccion">
+      <h3>Importación de datos</h3>
+
+      <p class="descripcion">
+        Selecciona un archivo CSV o Excel que contenga tus mediciones.
+        Los datos se utilizarán como entrada para los cálculos.
+      </p>
+
+      <div class="zona-archivo">
+        <strong>Selecciona tu archivo de datos</strong>
+
+        <input
+          type="file"
+          id="archivo"
+          accept=".csv,text/csv,.xlsx"
+        >
+
+        <button id="botonCargar" type="button">
+          Cargar archivo
+        </button>
+
+        <p id="estado" role="status" aria-live="polite">
+          Esperando un archivo CSV o Excel.
+        </p>
+      </div>
+    </section>
+
+    
+      <section class="seccion">
+  <h3>Área de trabajo</h3>
+
+  <p class="descripcion">
+    Selecciona las columnas que representarán las variables
+    independientes (x) y dependientes (y). Los datos se validarán
+    antes de utilizarlos en los métodos numéricos.
+  </p>
+
+  <div id="panelDatos" hidden>
+    <div class="controles-datos">
+      <div class="campo-datos">
+        <label for="columnaX">Variable independiente (x)</label>
+        <select id="columnaX" disabled>
+          <option value="">Carga un archivo primero</option>
+        </select>
+      </div>
+
+      <div class="campo-datos">
+        <label for="columnaY">Variable dependiente (y)</label>
+        <select id="columnaY" disabled>
+          <option value="">Carga un archivo primero</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="resumenDatos" class="resumen-datos" aria-live="polite">
+      Esperando datos.
+    </div>
+
+    <p id="mensajeValidacion" class="mensaje-datos" role="status"></p>
+
+    <div class="tabla-contenedor">
+      <table class="tabla-datos">
+        <thead id="encabezadoTabla"></thead>
+        <tbody id="cuerpoTabla"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <p id="mensajeInicial" class="descripcion">
+    Primero carga un archivo CSV o Excel en la sección anterior.
+    Aquí aparecerán la selección de variables y la tabla de datos.
+  </p>
+</section>
+
+
+<section class="seccion">
+  <h3>Métodos de interpolación</h3>
+  <p class="descripcion">
+    Selecciona las columnas x e y en el área de trabajo y calcula
+    una estimación mediante el método de interpolación de Lagrange.
+  </p>
+
+  <div class="metodo-lagrange">
+    <h4>Interpolación de Lagrange</h4>
+
+    <p class="descripcion">
+      Introduce el valor de x en el que deseas estimar y.
+      Se utilizarán todos los puntos válidos de las columnas elegidas.
+    </p>
+
+    <div class="lagrange-formulario">
+      <div class="campo-datos">
+        <label for="valorInterpolar">Valor de x</label>
+        <input
+          type="number"
+          id="valorInterpolar"
+          step="any"
+          placeholder="Ej. 7.5"
+        >
+      </div>
+
+      <button id="botonLagrange" type="button">
+        Calcular interpolación
+      </button>
+    </div>
+
+    <div
+      id="resultadoLagrange"
+      class="resultado-lagrange"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+  </div>
+  
+  <div class="metodo-newton">
+    <h4>Interpolación de Newton por diferencias divididas</h4>
+
+    <p class="descripcion">
+      Se utilizarán los mismos datos cargados y las columnas x e y
+      seleccionadas para construir la tabla de diferencias divididas,
+      obtener el polinomio interpolante y estimar el valor de y.
+    </p>
+
+    <div class="lagrange-formulario">
+      <div class="campo-datos">
+        <label for="valorInterpolarNewton">Valor de x</label>
+        <input
+          type="number"
+          id="valorInterpolarNewton"
+          step="any"
+          placeholder="Ej. 7.5"
+        >
+      </div>
+
+      <button id="botonNewton" type="button">
+        Calcular interpolación
+      </button>
+    </div>
+
+    <div
+      id="resultadoNewton"
+      class="resultado-lagrange"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+  </div>
+
+  <div class="metodo-matricial">
+    <h4>Interpolación por el método matricial</h4>
+
+    <p class="descripcion">
+      Se construirá la matriz de Vandermonde y se calcularán
+      los coeficientes del polinomio interpolante mediante
+      la matriz inversa.
+    </p>
+
+    <div class="lagrange-formulario">
+      <div class="campo-datos">
+        <label for="valorInterpolarMatricial">Valor de x</label>
+        <input
+          type="number"
+          id="valorInterpolarMatricial"
+          step="any"
+          placeholder="Ej. 7.5"
+        >
+      </div>
+
+      <button id="botonMatricial" type="button">
+        Calcular interpolación
+      </button>
+    </div>
+
+    <div
+      id="resultadoMatricial"
+      class="resultado-lagrange"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+</div>
+
+<div class="metodo-splines">
+  <h4>Interpolación por splines cúbicos naturales</h4>
+
+  <p class="descripcion">
+    Se construirán polinomios cúbicos por tramos
+    para interpolar los datos seleccionados.
+  </p>
+
+  <div class="lagrange-formulario">
+    <div class="campo-datos">
+      <label for="valorInterpolarSpline">
+        Valor de x
+      </label>
+
+      <input
+        type="number"
+        id="valorInterpolarSpline"
+        step="any"
+        placeholder="Ej. 7.5"
+      >
+    </div>
+
+    <button id="botonSpline" type="button">
+      Calcular spline
+    </button>
+  </div>
+
+  <div
+    id="resultadoSpline"
+    class="resultado-lagrange"
+    role="status"
+    aria-live="polite"
+    hidden
+  ></div>
+</div>
+</section>
+</main>
+
+  
+  <footer class="pie-institucional">
+    <p>
+      <strong>Curso:</strong> Métodos Numéricos
+      <span class="separador">|</span>
+      <strong>Docente:</strong> Josue Alfonso Miranda Fernandez
+    </p>
+
+    <p>
+      <strong>Integrantes:</strong>
+      Nestor Leonardo Gutierrez Paredes - Edu Jhamir Apolinario Gaspar - Felipe iwasaki Cuya
+    </p>
+
+    <div class="linea-dorada"></div>
+
+    <p class="universidad">
+      Universidad Nacional Mayor de San Marcos · 2026
+    </p>
+  </footer>
+
+<!-- Configuración de las expresiones matemáticas -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']]
+    },
+    svg: {
+      fontCache: 'global'
+    }
+  };
+</script>
+
+
+<!-- Biblioteca para representar las fórmulas -->
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    const archivo = document.getElementById("archivo");
+    const boton = document.getElementById("botonCargar");
+    const estado = document.getElementById("estado");
+
+    const panelDatos = document.getElementById("panelDatos");
+    const mensajeInicial = document.getElementById("mensajeInicial");
+    const columnaX = document.getElementById("columnaX");
+    const columnaY = document.getElementById("columnaY");
+    const resumenDatos = document.getElementById("resumenDatos");
+    const mensajeValidacion = document.getElementById("mensajeValidacion");
+    const encabezadoTabla = document.getElementById("encabezadoTabla");
+    const cuerpoTabla = document.getElementById("cuerpoTabla");
+
+    let encabezados = [];
+    let filas = [];
+    let separadorCSV = ",";
+    let nombreArchivo = "";
+
+    // Lee campos CSV respetando los textos entre comillas.
+    function analizarLinea(linea, separador) {
+      const campos = [];
+      let campo = "";
+      let entreComillas = false;
+
+      for (let i = 0; i < linea.length; i++) {
+        const caracter = linea[i];
+
+        if (caracter === '"') {
+          if (entreComillas && linea[i + 1] === '"') {
+            campo += '"';
+            i++;
+          } else {
+            entreComillas = !entreComillas;
+          }
+        } else if (caracter === separador && !entreComillas) {
+          campos.push(campo.trim());
+          campo = "";
+        } else {
+          campo += caracter;
+        }
+      }
+
+      campos.push(campo.trim());
+      return campos;
+    }
+
+    // Detecta si el archivo utiliza comas o punto y coma.
+    function detectarSeparador(linea) {
+      const comas = analizarLinea(linea, ",").length - 1;
+      const puntosComa = analizarLinea(linea, ";").length - 1;
+
+      return puntosComa > comas ? ";" : ",";
+    }
+
+    // Convierte un valor en número y rechaza valores vacíos.
+    function convertirNumero(valor) {
+      let texto = String(valor ?? "").trim();
+
+      if (texto === "") {
+        return null;
+      }
+
+      // Admite decimales con coma en archivos separados por punto y coma.
+      if (separadorCSV === ";" && /^[-+]?\d+,\d+(?:[eE][-+]?\d+)?$/.test(texto)) {
+        texto = texto.replace(",", ".");
+      }
+
+      // No acepta textos, separadores de miles ni valores infinitos.
+      if (!/^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/.test(texto)) {
+        return null;
+      }
+
+      const numero = Number(texto);
+      return Number.isFinite(numero) ? numero : null;
+    }
+
+    function crearOpcion(valor, texto) {
+      const opcion = document.createElement("option");
+      opcion.value = String(valor);
+      opcion.textContent = texto;
+      return opcion;
+    }
+
+    function mostrarMensaje(texto, tipo) {
+      mensajeValidacion.textContent = texto;
+      mensajeValidacion.className =
+        "mensaje-datos " + (tipo === "error" ? "estado-error" : "estado-correcto");
+    }
+
+    
+    boton.addEventListener("click", () => {
+      const seleccionado = archivo.files[0];
+
+      if (!seleccionado) {
+        estado.textContent = "Selecciona un archivo CSV o Excel primero.";
+        return;
+      }
+
+      const nombre = seleccionado.name.toLowerCase();
+      const esCSV = nombre.endsWith(".csv");
+      const esExcel = nombre.endsWith(".xlsx");
+
+      if (!esCSV && !esExcel) {
+        estado.textContent =
+          "Formato no válido. Selecciona un archivo .csv o .xlsx.";
+        return;
+      }
+
+      if (esExcel && typeof XLSX === "undefined") {
+        estado.textContent =
+          "No se pudo cargar la biblioteca de Excel. Revisa tu conexión.";
+        return;
+      }
+
+      const lector = new FileReader();
+
+      estado.textContent = "Leyendo archivo...";
+
+      lector.onload = () => {
+        try {
+          let encabezadosNuevos = [];
+          let filasNuevas = [];
+
+          if (esCSV) {
+            // Lectura CSV: conserva el funcionamiento actual.
+            const contenido = String(lector.result)
+              .replace(/^\uFEFF/, "")
+              .replace(/\r\n?/g, "\n");
+
+            const lineas = contenido
+              .split("\n")
+              .filter(linea => linea.trim() !== "");
+
+            if (lineas.length < 2) {
+              estado.textContent =
+                "El archivo debe tener encabezados y al menos una fila de datos.";
+              return;
+            }
+
+            separadorCSV = detectarSeparador(lineas[0]);
+
+            encabezadosNuevos = analizarLinea(
+              lineas[0],
+              separadorCSV
+            ).map((nombre, i) => nombre || `Columna ${i + 1}`);
+
+            filasNuevas = lineas.slice(1).map((linea, indice) => ({
+              numero: indice + 2,
+              valores: analizarLinea(linea, separadorCSV)
+            }));
+
+          } else {
+            // Lectura Excel: utiliza la primera hoja del libro.
+            const libro = XLSX.read(lector.result, {
+              type: "array"
+            });
+
+            if (!libro.SheetNames.length) {
+              estado.textContent = "El archivo Excel no contiene hojas.";
+              return;
+            }
+
+            const hoja = libro.Sheets[libro.SheetNames[0]];
+
+            const datos = XLSX.utils.sheet_to_json(hoja, {
+              header: 1,
+              defval: "",
+              raw: true,
+              blankrows: false
+            });
+
+            if (datos.length < 2) {
+              estado.textContent =
+                "La primera hoja debe tener encabezados y al menos una fila de datos.";
+              return;
+            }
+
+            const primeraFila = datos[0];
+
+            encabezadosNuevos = primeraFila.map((valor, i) => {
+              const nombreColumna = String(valor ?? "").trim();
+              return nombreColumna || `Columna ${i + 1}`;
+            });
+
+            filasNuevas = datos.slice(1).map((valores, indice) => ({
+              numero: indice + 2,
+              valores: encabezadosNuevos.map((_, columna) => {
+                const valor = valores[columna] ?? "";
+                return valor instanceof Date
+                  ? valor.toISOString()
+                  : String(valor);
+              })
+            }));
+
+            // Excel ya proporciona números reales para las celdas numéricas.
+            // No aplicamos la conversión de coma decimal propia del CSV.
+            separadorCSV = ",";
+          }
+
+          if (encabezadosNuevos.length < 2) {
+            estado.textContent =
+              "El archivo debe tener al menos dos columnas.";
+            return;
+          }
+
+          // Actualiza los datos solo después de validar la lectura.
+          encabezados = encabezadosNuevos;
+          filas = filasNuevas;
+          nombreArchivo = seleccionado.name;
+
+          columnaX.replaceChildren();
+          columnaY.replaceChildren();
+
+          encabezados.forEach((nombre, indice) => {
+            columnaX.appendChild(crearOpcion(indice, nombre));
+            columnaY.appendChild(crearOpcion(indice, nombre));
+          });
+
+          columnaX.value = "0";
+          columnaY.value = "1";
+
+          panelDatos.hidden = false;
+          mensajeInicial.hidden = true;
+          columnaX.disabled = false;
+          columnaY.disabled = false;
+
+          estado.textContent =
+            `Archivo cargado: ${nombreArchivo}. ` +
+            `${filas.length} filas encontradas.`;
+
+          actualizarTabla();
+
+        } catch (error) {
+          console.error(error);
+          estado.textContent =
+            "No se pudo interpretar el archivo. Revisa su formato y contenido.";
+        }
+      };
+
+      lector.onerror = () => {
+        estado.textContent = "No se pudo leer el archivo.";
+      };
+
+      if (esExcel) {
+        lector.readAsArrayBuffer(seleccionado);
+      } else {
+        lector.readAsText(seleccionado, "UTF-8");
+      }
+    });
+
+    // Actualiza la tabla cuando el usuario cambia x o y.
+    columnaX.addEventListener("change", actualizarTabla);
+    columnaY.addEventListener("change", actualizarTabla);
+
+    function actualizarTabla() {
+      if (filas.length === 0) {
+        return;
+      }
+
+      const indiceX = Number(columnaX.value);
+      const indiceY = Number(columnaY.value);
+
+      encabezadoTabla.replaceChildren();
+      cuerpoTabla.replaceChildren();
+
+      const filaEncabezado = document.createElement("tr");
+
+      ["Fila", "x: " + encabezados[indiceX],
+        "y: " + encabezados[indiceY], "Validación"].forEach(titulo => {
+        const th = document.createElement("th");
+        th.textContent = titulo;
+        filaEncabezado.appendChild(th);
+      });
+
+      encabezadoTabla.appendChild(filaEncabezado);
+
+      let validas = 0;
+      let errores = 0;
+
+      filas.forEach(fila => {
+        const valorX = convertirNumero(fila.valores[indiceX]);
+        const valorY = convertirNumero(fila.valores[indiceY]);
+
+        const erroresFila = [];
+
+        if (valorX === null) {
+          erroresFila.push("x no es numérico");
+        }
+
+        if (valorY === null) {
+          erroresFila.push("y no es numérico");
+        }
+
+        const esValida = erroresFila.length === 0;
+
+        if (esValida) {
+          validas++;
+        } else {
+          errores++;
+        }
+
+        const tr = document.createElement("tr");
+
+        const datos = [
+          fila.numero,
+          fila.valores[indiceX] ?? "",
+          fila.valores[indiceY] ?? "",
+          esValida ? "Correcto" : erroresFila.join("; ")
+        ];
+
+        datos.forEach((dato, indice) => {
+          const td = document.createElement("td");
+          td.textContent = String(dato);
+
+          if (indice === 3) {
+            td.className = esValida ? "estado-correcto" : "estado-error";
+          }
+
+          tr.appendChild(td);
+        });
+
+        cuerpoTabla.appendChild(tr);
+      });
+
+      resumenDatos.textContent =
+        `Archivo: ${nombreArchivo} · ` +
+        `${filas.length} filas · ${validas} válidas · ${errores} con errores.`;
+
+      if (indiceX === indiceY) {
+        mostrarMensaje(
+          "Seleccionaste la misma columna para x e y. Elige dos columnas diferentes.",
+          "error"
+        );
+      } else if (validas === 0) {
+        mostrarMensaje(
+          "No hay filas válidas para estas columnas. Revisa los datos o cambia la selección.",
+          "error"
+        );
+      } else if (errores > 0) {
+        mostrarMensaje(
+          `Se encontraron ${errores} filas con valores vacíos o no numéricos. Se muestran para que puedas revisarlas.`,
+          "error"
+        );
+      } else {
+        mostrarMensaje(
+          "Todas las filas seleccionadas contienen valores numéricos válidos.",
+          "correcto"
+        );
+      }
+    }
+    
+    const botonLagrange = document.getElementById("botonLagrange");
+    const valorInterpolar = document.getElementById("valorInterpolar");
+    const resultadoLagrange = document.getElementById("resultadoLagrange");
+
+    botonLagrange.addEventListener("click", () => {
+      resultadoLagrange.hidden = false;
+
+      function mostrarError(mensaje) {
+        resultadoLagrange.replaceChildren();
+        const texto = document.createElement("p");
+        texto.className = "estado-error";
+        texto.textContent = mensaje;
+        resultadoLagrange.appendChild(texto);
+      }
+
+      // Verificar que haya un archivo cargado.
+      if (filas.length === 0) {
+        mostrarError("Primero carga un archivo CSV o Excel.");
+        return;
+      }
+
+      const indiceX = Number(columnaX.value);
+      const indiceY = Number(columnaY.value);
+      const xObjetivo = Number(valorInterpolar.value);
+
+      if (indiceX === indiceY) {
+        mostrarError("Selecciona columnas diferentes para x e y.");
+        return;
+      }
+
+      if (
+        valorInterpolar.value.trim() === "" ||
+        !Number.isFinite(xObjetivo)
+      ) {
+        mostrarError("Introduce un valor numérico válido para x.");
+        return;
+      }
+
+      // Lagrange necesita que todos los puntos utilizados sean válidos.
+      const puntos = [];
+
+      for (const fila of filas) {
+        const x = convertirNumero(fila.valores[indiceX]);
+        const y = convertirNumero(fila.valores[indiceY]);
+
+        if (x === null || y === null) {
+          mostrarError(
+            `La fila ${fila.numero} contiene un valor vacío o no numérico. ` +
+            "Corrige el archivo selecciona otras columnas antes de calcular."
+          );
+          return;
+        }
+
+        puntos.push({ x, y });
+      }
+
+      // Comprobar que no existan valores x duplicados.
+      const valoresX = new Set(puntos.map(punto => punto.x));
+
+      if (valoresX.size !== puntos.length) {
+        mostrarError(
+          "Hay valores x duplicados. La interpolación de Lagrange " +
+          "requiere valores x distintos."
+        );
+        return;
+      }
+
+      // Calcular P(x) mediante la fórmula de Lagrange.
+      let resultado = 0;
+
+      for (let i = 0; i < puntos.length; i++) {
+        let base = puntos[i].y;
+
+        for (let j = 0; j < puntos.length; j++) {
+          if (i !== j) {
+            const denominador = puntos[i].x - puntos[j].x;
+
+            base *= (xObjetivo - puntos[j].x) / denominador;
+          }
+        }
+
+        resultado += base;
+      }
+      if (!Number.isFinite(resultado)) {
+        mostrarError(
+          "El cálculo produjo un resultado no finito. " +
+          "Revisa los valores y la escala de los datos."
+        );
+        return;
+      }
+
+      // Mostrar el resultado de forma segura.
+      resultadoLagrange.replaceChildren();
+
+      const titulo = document.createElement("strong");
+      titulo.textContent = "Resultado de la interpolación";
+      resultadoLagrange.appendChild(titulo);
+
+      const detalle = document.createElement("p");
+      detalle.textContent =
+        `Método: Lagrange · Puntos utilizados: ${puntos.length}`;
+      resultadoLagrange.appendChild(detalle);
+
+      const valor = document.createElement("p");
+      valor.className = "valor-final";
+      valor.textContent =
+        `P(${xObjetivo}) = ${resultado.toLocaleString("es-PE", {
+          maximumSignificantDigits: 12
+        })}`;
+      resultadoLagrange.appendChild(valor);
+
+      const nota = document.createElement("p");
+      nota.textContent =
+        "El resultado es una estimación del valor de y para el x indicado.";
+      resultadoLagrange.appendChild(nota);
+      
+      
+        // ===== PROCEDIMIENTO MATEMÁTICO CON MATHJAX =====
+
+        const procedimiento = document.createElement("section");
+        procedimiento.className = "procedimiento-lagrange";
+
+        function numeroTex(n) {
+          return Number(n.toPrecision(8)).toString();
+        }
+
+        function bloqueMath(latex) {
+          const bloque = document.createElement("div");
+          bloque.className = "formula-matematica";
+          bloque.textContent = "\\[" + latex + "\\]";
+          return bloque;
+        }
+
+        function textoProcedimiento(texto) {
+          const p = document.createElement("p");
+          p.textContent = texto;
+          return p;
+        }
+
+        const tituloProc = document.createElement("h3");
+        tituloProc.textContent = "Desarrollo matemático";
+        procedimiento.appendChild(tituloProc);
+
+        procedimiento.appendChild(
+          textoProcedimiento("1. Fórmula general de interpolación")
+        );
+
+        procedimiento.appendChild(
+          bloqueMath(
+            "P(x)=\\sum_{i=0}^{n} y_i L_i(x)"
+          )
+        );
+
+        procedimiento.appendChild(
+          bloqueMath(
+            "L_i(x)=\\prod_{\\substack{j=0\\\\j\\ne i}}^{n}" +
+            "\\frac{x-x_j}{x_i-x_j}"
+          )
+        );
+
+        procedimiento.appendChild(
+          textoProcedimiento("2. Datos utilizados")
+        );
+
+        const listaPuntos = document.createElement("ul");
+        listaPuntos.className = "lista-puntos";
+
+        puntos.forEach(punto => {
+          const li = document.createElement("li");
+          li.textContent = `(${numeroTex(punto.x)}, ${numeroTex(punto.y)})`;
+          listaPuntos.appendChild(li);
+        });
+
+        procedimiento.appendChild(listaPuntos);
+
+        procedimiento.appendChild(
+          textoProcedimiento(
+            `3. Evaluación de las bases en x = ${numeroTex(xObjetivo)}`
+          )
+        );
+
+        let sumaTerminos = 0;
+
+        puntos.forEach((punto, i) => {
+          let base = 1;
+          const fracciones = [];
+
+          puntos.forEach((otro, j) => {
+            if (i !== j) {
+              const numerador = xObjetivo - otro.x;
+              const denominador = punto.x - otro.x;
+
+              base *= numerador / denominador;
+
+              fracciones.push(
+                "\\frac{" +
+                numeroTex(xObjetivo) + "-" + numeroTex(otro.x) +
+                "}{" +
+                numeroTex(punto.x) + "-" + numeroTex(otro.x) +
+                "}"
+              );
+            }
+          });
+
+          const termino = punto.y * base;
+          sumaTerminos += termino;
+
+          const subtituloBase = document.createElement("h4");
+          subtituloBase.textContent = `Base ${i + 1}`;
+          procedimiento.appendChild(subtituloBase);
+
+          procedimiento.appendChild(
+            bloqueMath(
+              "L_{" + i + "}(" + numeroTex(xObjetivo) + ")=" +
+              fracciones.join("\\cdot") +
+              "=" + numeroTex(base)
+            )
+          );
+
+          procedimiento.appendChild(
+            bloqueMath(
+              "y_{" + i + "}L_{" + i + "}(x)=" +
+              numeroTex(punto.y) + "\\cdot" +
+              numeroTex(base) + "=" + numeroTex(termino)
+            )
+          );
+        });
+
+        procedimiento.appendChild(
+          textoProcedimiento("4. Suma de los términos")
+        );
+
+        const sumaExpresion = puntos
+          .map((punto, i) => {
+            const base = (() => {
+              let producto = 1;
+              puntos.forEach((otro, j) => {
+                if (i !== j) {
+                  producto *=
+                    (xObjetivo - otro.x) / (punto.x - otro.x);
+                }
+              });
+              return producto;
+            })();
+
+            return numeroTex(punto.y * base);
+          })
+          .join(" + ");
+
+        procedimiento.appendChild(
+          bloqueMath(
+            "P(" + numeroTex(xObjetivo) + ")=" +
+            sumaExpresion + "=" + numeroTex(sumaTerminos)
+          )
+        );
+
+        const resultadoProc = document.createElement("div");
+        resultadoProc.className = "resultado-procedimiento";
+
+        const resultadoTexto = document.createElement("p");
+        resultadoTexto.textContent = "Resultado de la interpolación";
+
+        resultadoProc.appendChild(resultadoTexto);
+        resultadoProc.appendChild(
+          bloqueMath(
+            "P(" + numeroTex(xObjetivo) + ")=" +
+            numeroTex(sumaTerminos)
+          )
+        );
+
+        procedimiento.appendChild(resultadoProc);
+        resultadoLagrange.appendChild(procedimiento);
+
+  // ===== GRÁFICA INTERACTIVA DE LAGRANGE =====
+
+      const seccionGrafica = document.createElement("section");
+      seccionGrafica.className = "grafica-lagrange";
+
+      const tituloGrafica = document.createElement("h3");
+      tituloGrafica.textContent = "Gráfica de interpolación";
+      seccionGrafica.appendChild(tituloGrafica);
+
+      const descripcionGrafica = document.createElement("p");
+      descripcionGrafica.textContent =
+        "Puntos experimentales, polinomio interpolante y valor evaluado.";
+      seccionGrafica.appendChild(descripcionGrafica);
+
+      const contenedorCanvas = document.createElement("div");
+      contenedorCanvas.className = "contenedor-canvas";
+
+      const canvas = document.createElement("canvas");
+      canvas.setAttribute(
+        "aria-label",
+        "Gráfica de los puntos experimentales y el polinomio de Lagrange"
+      );
+
+      contenedorCanvas.appendChild(canvas);
+      seccionGrafica.appendChild(contenedorCanvas);
+
+      const notaGrafica = document.createElement("p");
+      notaGrafica.className = "nota-grafica";
+      notaGrafica.textContent =
+        "Los círculos representan los datos originales. " +
+        "El punto dorado indica el valor calculado.";
+      seccionGrafica.appendChild(notaGrafica);
+
+      resultadoLagrange.appendChild(seccionGrafica);
+
+  if (typeof Chart === "undefined") {
+    notaGrafica.textContent =
+      "No se pudo cargar Chart.js. Comprueba tu conexión a internet.";
+  } else {
+    // Evita acumular gráficas al calcular varias veces.
+    if (window.graficaLagrange) {
+      window.graficaLagrange.destroy();
+    }
+
+    const minimoX = Math.min(...puntos.map(p => p.x));
+    const maximoX = Math.max(...puntos.map(p => p.x));
+
+    // Evalúa el polinomio con los puntos de Lagrange.
+    function evaluarLagrange(x) {
+      let total = 0;
+
+      for (let i = 0; i < puntos.length; i++) {
+        let base = puntos[i].y;
+
+        for (let j = 0; j < puntos.length; j++) {
+          if (i !== j) {
+            base *=
+              (x - puntos[j].x) /
+              (puntos[i].x - puntos[j].x);
+          }
+        }
+
+        total += base;
+      }
+
+      return total;
+    }
+
+    // Genera muestras para dibujar una curva suave.
+    const cantidadMuestras = 150;
+    const curva = [];
+
+    if (minimoX === maximoX) {
+      curva.push({
+        x: minimoX,
+        y: evaluarLagrange(minimoX)
+      });
+    } else {
+      for (let i = 0; i <= cantidadMuestras; i++) {
+        const x =
+          minimoX +
+          (maximoX - minimoX) * i / cantidadMuestras;
+
+        curva.push({
+          x,
+          y: evaluarLagrange(x)
+        });
+      }
+    }
+
+    window.graficaLagrange = new Chart(canvas, {
+      type: "scatter",
+
+      data: {
+        datasets: [
+          {
+            label: "Polinomio de Lagrange",
+            data: curva,
+            showLine: true,
+            pointRadius: 0,
+            borderColor: "#173653",
+            borderWidth: 3,
+            tension: 0
+          },
+          {
+            label: "Puntos experimentales",
+            data: puntos.map(p => ({
+              x: p.x,
+              y: p.y
+            })),
+            showLine: false,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+            pointBackgroundColor: "#ffffff",
+            pointBorderColor: "#173653",
+            pointBorderWidth: 2
+          },
+          {
+            label: "Valor calculado",
+            data: [{
+              x: xObjetivo,
+              y: resultado
+            }],
+            showLine: false,
+            pointRadius: 7,
+            pointHoverRadius: 10,
+            pointBackgroundColor: "#c5a04b",
+            pointBorderColor: "#173653",
+            pointBorderWidth: 2
+          }
+        ]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        interaction: {
+          mode: "nearest",
+          intersect: false
+        },
+
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              usePointStyle: true,
+              padding: 18
+            }
+          },
+
+          tooltip: {
+            callbacks: {
+              label: contexto => {
+                const punto = contexto.raw;
+                return (
+                  contexto.dataset.label +
+                  ": (" +
+                  Number(punto.x.toPrecision(8)) +
+                  ", " +
+                  Number(punto.y.toPrecision(8)) +
+                  ")"
+                );
+              }
+            }
+          }
+        },
+
+        scales: {
+          x: {
+            type: "linear",
+            title: {
+              display: true,
+              text: "x"
+            },
+            grid: {
+              color: "rgba(23, 54, 83, 0.08)"
+            }
+          },
+
+          y: {
+            title: {
+              display: true,
+              text: "P(x) / y"
+            },
+            grid: {
+              color: "rgba(23, 54, 83, 0.08)"
+            }
+          }
+        }
+      }
+    });
+  }
+
+        // Renderizar las fórmulas recién añadidas
+        if (window.MathJax && window.MathJax.typesetPromise) {
+          window.MathJax.typesetPromise([procedimiento]).catch(error => {
+            console.error("Error al renderizar las fórmulas:", error);
+          });
+        }
+
+    });
+
+
+    // ===== MÉTODO DE NEWTON POR DIFERENCIAS DIVIDIDAS =====
+
+    const botonNewton = document.getElementById("botonNewton");
+    const valorInterpolarNewton =
+      document.getElementById("valorInterpolarNewton");
+    const resultadoNewton = document.getElementById("resultadoNewton");
+
+    botonNewton.addEventListener("click", () => {
+      resultadoNewton.hidden = false;
+      resultadoNewton.replaceChildren();
+
+      function errorNewton(mensaje) {
+        resultadoNewton.replaceChildren();
+        const p = document.createElement("p");
+        p.className = "estado-error";
+        p.textContent = mensaje;
+        resultadoNewton.appendChild(p);
+      }
+
+      function numeroNewton(n) {
+        return Number(n.toPrecision(8)).toString();
+      }
+
+      function agregarFormulaNewton(latex, contenedor) {
+        const div = document.createElement("div");
+        div.className = "formula-matematica";
+        div.textContent = "\\[" + latex + "\\]";
+        contenedor.appendChild(div);
+      }
+
+      // 1. Validar los datos de entrada.
+      if (filas.length < 2) {
+        errorNewton(
+          "Carga un archivo con al menos dos filas de datos."
+        );
+        return;
+      }
+
+      const indiceX = Number(columnaX.value);
+      const indiceY = Number(columnaY.value);
+      const xObjetivo = Number(valorInterpolarNewton.value);
+
+      if (indiceX === indiceY) {
+        errorNewton("Selecciona columnas diferentes para x e y.");
+        return;
+      }
+
+      if (
+        valorInterpolarNewton.value.trim() === "" ||
+        !Number.isFinite(xObjetivo)
+      ) {
+        errorNewton("Introduce un valor numérico válido para x.");
+        return;
+      }
+
+      // 2. Obtener los puntos válidos.
+      const puntos = [];
+
+      for (const fila of filas) {
+        const x = convertirNumero(fila.valores[indiceX]);
+        const y = convertirNumero(fila.valores[indiceY]);
+
+        if (x === null || y === null) {
+          errorNewton(
+            `La fila ${fila.numero} contiene valores vacíos o no numéricos.`
+          );
+          return;
+        }
+
+        puntos.push({ x, y });
+      }
+
+      const valoresX = new Set(puntos.map(p => p.x));
+
+      if (valoresX.size !== puntos.length) {
+        errorNewton(
+          "Hay valores x duplicados. Newton requiere valores x distintos."
+        );
+        return;
+      }
+
+      // Ordenar los puntos por x para facilitar la lectura.
+      puntos.sort((a, b) => a.x - b.x);
+
+      const n = puntos.length;
+
+      // 3. Construir la tabla triangular de diferencias divididas.
+      const tabla = Array.from(
+        { length: n },
+        () => Array(n).fill(null)
+      );
+
+      for (let i = 0; i < n; i++) {
+        tabla[i][0] = puntos[i].y;
+      }
+
+      for (let orden = 1; orden < n; orden++) {
+        for (let i = 0; i < n - orden; i++) {
+          const denominador =
+            puntos[i + orden].x - puntos[i].x;
+
+          tabla[i][orden] =
+            (tabla[i + 1][orden - 1] -
+             tabla[i][orden - 1]) / denominador;
+        }
+      }
+
+      // 4. Evaluar el polinomio de Newton.
+      let resultado = tabla[0][0];
+      let producto = 1;
+
+      for (let orden = 1; orden < n; orden++) {
+        producto *= xObjetivo - puntos[orden - 1].x;
+        resultado += tabla[0][orden] * producto;
+      }
+
+      if (!Number.isFinite(resultado)) {
+        errorNewton(
+          "El cálculo produjo un resultado no finito. Revisa los datos."
+        );
+        return;
+      }
+
+      // 5. Mostrar el resultado y la tabla.
+      const titulo = document.createElement("h3");
+      titulo.textContent = "Resultado de Newton";
+      resultadoNewton.appendChild(titulo);
+
+      const resumen = document.createElement("p");
+      resumen.textContent =
+        `Archivo: ${nombreArchivo} · Puntos utilizados: ${n}`;
+      resultadoNewton.appendChild(resumen);
+
+      const valorFinal = document.createElement("p");
+      valorFinal.className = "valor-final";
+      valorFinal.textContent =
+        `P(${numeroNewton(xObjetivo)}) = ${
+          resultado.toLocaleString("es-PE", {
+            maximumSignificantDigits: 12
+          })
+        }`;
+      resultadoNewton.appendChild(valorFinal);
+
+      const tituloTabla = document.createElement("h3");
+      tituloTabla.textContent = "Tabla de diferencias divididas";
+      resultadoNewton.appendChild(tituloTabla);
+
+      const contenedorTabla = document.createElement("div");
+      contenedorTabla.style.overflowX = "auto";
+
+      const tablaHTML = document.createElement("table");
+      tablaHTML.className = "tabla-datos";
+
+      const thead = document.createElement("thead");
+      const filaCabecera = document.createElement("tr");
+
+      [
+        "xᵢ",
+        "f[xᵢ]",
+        ...Array.from(
+          { length: n - 1 },
+          (_, i) => `${i + 1}.ª diferencia`
+        )
+      ].forEach(texto => {
+        const th = document.createElement("th");
+        th.textContent = texto;
+        filaCabecera.appendChild(th);
+      });
+
+      thead.appendChild(filaCabecera);
+      tablaHTML.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+
+      for (let i = 0; i < n; i++) {
+        const tr = document.createElement("tr");
+
+        const valoresFila = [
+          puntos[i].x,
+          tabla[i][0],
+          ...Array.from(
+            { length: n - 1 },
+            (_, orden) => {
+              const indiceOrden = orden + 1;
+              return i + indiceOrden < n
+                ? tabla[i][indiceOrden]
+                : null;
+            }
+          )
+        ];
+
+        valoresFila.forEach(valor => {
+          const td = document.createElement("td");
+          td.textContent =
+            valor === null || valor === undefined
+              ? "—"
+              : numeroNewton(valor);
+          tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+      }
+
+      tablaHTML.appendChild(tbody);
+      contenedorTabla.appendChild(tablaHTML);
+      resultadoNewton.appendChild(contenedorTabla);
+
+      // 6. Mostrar el polinomio de Newton.
+      const tituloPolinomio = document.createElement("h3");
+      tituloPolinomio.textContent = "Polinomio interpolante";
+      resultadoNewton.appendChild(tituloPolinomio);
+
+      let polinomio = numeroNewton(tabla[0][0]);
+
+      for (let orden = 1; orden < n; orden++) {
+        polinomio +=
+          "+" + numeroNewton(tabla[0][orden]) +
+          "\\," +
+          puntos.slice(0, orden)
+            .map(p => `(x-${numeroNewton(p.x)})`)
+            .join("");
+      }
+
+      agregarFormulaNewton(
+        "P(x)=" + polinomio,
+        resultadoNewton
+      );
+
+      const nota = document.createElement("p");
+      nota.textContent =
+        "El polinomio se construyó con los coeficientes " +
+        "de la primera fila de la tabla de diferencias divididas.";
+      resultadoNewton.appendChild(nota);
+
+      // 7. Dibujar el polinomio con Chart.js.
+      const tituloGrafica = document.createElement("h3");
+      tituloGrafica.textContent = "Gráfica de interpolación";
+      resultadoNewton.appendChild(tituloGrafica);
+
+      const contenedorCanvas = document.createElement("div");
+      contenedorCanvas.style.position = "relative";
+      contenedorCanvas.style.width = "100%";
+      contenedorCanvas.style.height = "350px";
+
+      const canvas = document.createElement("canvas");
+      canvas.setAttribute(
+        "aria-label",
+        "Gráfica del polinomio interpolante de Newton"
+      );
+
+      contenedorCanvas.appendChild(canvas);
+      resultadoNewton.appendChild(contenedorCanvas);
+
+      if (typeof Chart === "undefined") {
+        const aviso = document.createElement("p");
+        aviso.textContent =
+          "No se pudo cargar Chart.js. Comprueba tu conexión.";
+        resultadoNewton.appendChild(aviso);
+      } else {
+        if (window.graficaNewton) {
+          window.graficaNewton.destroy();
+        }
+
+        function evaluarNewton(x) {
+          let total = tabla[0][0];
+          let productoLocal = 1;
+
+          for (let orden = 1; orden < n; orden++) {
+            productoLocal *= x - puntos[orden - 1].x;
+            total += tabla[0][orden] * productoLocal;
+          }
+
+          return total;
+        }
+
+        const minimoX = puntos[0].x;
+        const maximoX = puntos[n - 1].x;
+        const curva = [];
+        const muestras = 150;
+
+        for (let i = 0; i <= muestras; i++) {
+          const x = minimoX === maximoX
+            ? minimoX
+            : minimoX + (maximoX - minimoX) * i / muestras;
+
+          curva.push({ x, y: evaluarNewton(x) });
+        }
+
+        window.graficaNewton = new Chart(canvas, {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Polinomio de Newton",
+                data: curva,
+                showLine: true,
+                pointRadius: 0,
+                borderColor: "#173653",
+                borderWidth: 3
+              },
+              {
+                label: "Puntos experimentales",
+                data: puntos.map(p => ({ x: p.x, y: p.y })),
+                showLine: false,
+                pointRadius: 5,
+                pointBackgroundColor: "#ffffff",
+                pointBorderColor: "#173653",
+                pointBorderWidth: 2
+              },
+              {
+                label: "Valor calculado",
+                data: [{ x: xObjetivo, y: resultado }],
+                showLine: false,
+                pointRadius: 7,
+                pointBackgroundColor: "#c5a04b",
+                pointBorderColor: "#173653",
+                pointBorderWidth: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                type: "linear",
+                title: { display: true, text: "x" }
+              },
+              y: {
+                title: { display: true, text: "P(x) / y" }
+              }
+            },
+            plugins: {
+              legend: { position: "bottom" }
+            }
+          }
+        });
+      }
+
+      // Renderizar las fórmulas de MathJax.
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([resultadoNewton]).catch(error => {
+          console.error("Error al renderizar Newton:", error);
+        });
+      }
+    });
+
+    // ===== MÉTODO MATRICIAL POR MATRIZ INVERSA =====
+
+    const botonMatricial =
+      document.getElementById("botonMatricial");
+
+    const valorInterpolarMatricial =
+      document.getElementById("valorInterpolarMatricial");
+
+    const resultadoMatricial =
+      document.getElementById("resultadoMatricial");
+
+    botonMatricial.addEventListener("click", () => {
+      resultadoMatricial.hidden = false;
+      resultadoMatricial.replaceChildren();
+
+      function errorMatricial(mensaje) {
+        resultadoMatricial.replaceChildren();
+
+        const p = document.createElement("p");
+        p.className = "estado-error";
+        p.textContent = mensaje;
+        resultadoMatricial.appendChild(p);
+      }
+
+      function formatoMatricial(numero) {
+        if (Math.abs(numero) < 1e-12) return "0";
+        return Number(numero.toPrecision(8)).toString();
+      }
+
+      function agregarTituloMatricial(texto) {
+        const h3 = document.createElement("h3");
+        h3.textContent = texto;
+        resultadoMatricial.appendChild(h3);
+      }
+
+      function agregarFormulaMatricial(latex) {
+        const div = document.createElement("div");
+        div.className = "formula-matematica";
+        div.textContent = "\\[" + latex + "\\]";
+        resultadoMatricial.appendChild(div);
+      }
+
+      function mostrarMatrizMatricial(nombre, matriz) {
+        agregarTituloMatricial(nombre);
+
+        const contenedor = document.createElement("div");
+        contenedor.style.overflowX = "auto";
+
+        const tablaHTML = document.createElement("table");
+        tablaHTML.className = "matriz-tabla";
+
+        const tbody = document.createElement("tbody");
+
+        matriz.forEach(fila => {
+          const tr = document.createElement("tr");
+
+          
+        fila.forEach((valor, j) => {
+          const td = document.createElement("td");
+          td.textContent = formatoMatricial(valor);
+
+          // Separar visualmente las dos mitades
+          // de una matriz aumentada [A | I].
+          if (
+            nombre === "Matriz aumentada" &&
+            j === n - 1
+          ) {
+            td.classList.add("separador-matriz");
+          }
+
+          tr.appendChild(td);
+        });
+
+
+          tbody.appendChild(tr);
+        });
+
+        tablaHTML.appendChild(tbody);
+        contenedor.appendChild(tablaHTML);
+        resultadoMatricial.appendChild(contenedor);
+      }
+
+      // 1. Validar los datos.
+
+      if (filas.length < 2) {
+        errorMatricial(
+          "Carga un archivo con al menos dos puntos."
+        );
+        return;
+      }
+
+      const indiceX = Number(columnaX.value);
+      const indiceY = Number(columnaY.value);
+      const xObjetivo = Number(valorInterpolarMatricial.value);
+
+      if (indiceX === indiceY) {
+        errorMatricial(
+          "Selecciona columnas diferentes para x e y."
+        );
+        return;
+      }
+
+      if (
+        valorInterpolarMatricial.value.trim() === "" ||
+        !Number.isFinite(xObjetivo)
+      ) {
+        errorMatricial(
+          "Introduce un valor numérico válido para x."
+        );
+        return;
+      }
+
+      // 2. Obtener los puntos del archivo.
+
+      const puntos = [];
+
+      for (const fila of filas) {
+        const x = convertirNumero(fila.valores[indiceX]);
+        const y = convertirNumero(fila.valores[indiceY]);
+
+        if (x === null || y === null) {
+          errorMatricial(
+            `La fila ${fila.numero} contiene valores vacíos o no numéricos.`
+          );
+          return;
+        }
+
+        if (!Number.isFinite(x) || !Number.isFinite(y)) {
+          errorMatricial(
+            `La fila ${fila.numero} contiene valores no válidos.`
+          );
+          return;
+        }
+
+        puntos.push({ x, y });
+      }
+
+      const valoresX = new Set(puntos.map(p => p.x));
+
+      if (valoresX.size !== puntos.length) {
+        errorMatricial(
+          "Hay valores x duplicados. La matriz no tendría inversa."
+        );
+        return;
+      }
+
+      puntos.sort((a, b) => a.x - b.x);
+
+      const n = puntos.length;
+
+      // 3. Construir la matriz de Vandermonde A.
+
+      const A = puntos.map(punto =>
+        Array.from(
+          { length: n },
+          (_, j) => punto.x ** j
+        )
+      );
+
+      const vectorY = puntos.map(punto => punto.y);
+
+
+      // 4. Calcular A inversa con Gauss-Jordan
+      // y guardar el procedimiento paso a paso.
+
+      const pasosInversa = [];
+
+      const aumentada = A.map((fila, i) => [
+        ...fila,
+        ...Array.from(
+          { length: n },
+          (_, j) => i === j ? 1 : 0
+        )
+      ]);
+
+      function guardarPasoInversa(descripcion) {
+        pasosInversa.push({
+          descripcion,
+          matriz: aumentada.map(fila => [...fila])
+        });
+      }
+
+      guardarPasoInversa(
+        "Paso inicial: construir la matriz aumentada [A | I]."
+      );
+
+      for (let columna = 0; columna < n; columna++) {
+        let pivote = columna;
+
+        for (let i = columna + 1; i < n; i++) {
+          if (
+            Math.abs(aumentada[i][columna]) >
+            Math.abs(aumentada[pivote][columna])
+          ) {
+            pivote = i;
+          }
+        }
+
+        if (
+          Math.abs(aumentada[pivote][columna]) < 1e-12
+        ) {
+          errorMatricial(
+            "No se pudo invertir la matriz con precisión suficiente. " +
+            "Prueba con menos puntos o valores de x más pequeños."
+          );
+          return;
+        }
+
+        if (pivote !== columna) {
+          [
+            aumentada[columna],
+            aumentada[pivote]
+          ] = [
+            aumentada[pivote],
+            aumentada[columna]
+          ];
+
+          guardarPasoInversa(
+            `Intercambiar las filas ${columna + 1} y ${pivote + 1}.`
+          );
+        }
+
+        const divisor = aumentada[columna][columna];
+
+        for (let j = 0; j < 2 * n; j++) {
+          aumentada[columna][j] /= divisor;
+        }
+
+        guardarPasoInversa(
+          `Dividir la fila ${columna + 1} entre ${formatoMatricial(divisor)} ` +
+          "para convertir el pivote en 1."
+        );
+
+        for (let i = 0; i < n; i++) {
+          if (i === columna) continue;
+
+          const factor = aumentada[i][columna];
+
+          if (Math.abs(factor) < 1e-12) continue;
+
+          for (let j = 0; j < 2 * n; j++) {
+            aumentada[i][j] -=
+              factor * aumentada[columna][j];
+          }
+
+          guardarPasoInversa(
+            `Fila ${i + 1}: restar ${formatoMatricial(factor)} ` +
+            "veces la fila " + (columna + 1) +
+            " para obtener un cero en la columna " +
+            (columna + 1) + "."
+          );
+        }
+      }
+
+      const inversa = aumentada.map(fila =>
+        fila.slice(n)
+      );
+
+      // Mostrar el desarrollo de Gauss-Jordan.
+
+      agregarTituloMatricial(
+        "Desarrollo de la matriz inversa paso a paso"
+      );
+
+      const explicacion = document.createElement("p");
+
+      explicacion.textContent =
+        "Aplicamos operaciones elementales por filas a la matriz " +
+        "aumentada [A | I], hasta obtener [I | A⁻¹].";
+
+      resultadoMatricial.appendChild(explicacion);
+
+      pasosInversa.forEach((paso, indice) => {
+        const tituloPaso = document.createElement("h4");
+
+        tituloPaso.textContent =
+          `${indice + 1}. ${paso.descripcion}`;
+
+        resultadoMatricial.appendChild(tituloPaso);
+
+        mostrarMatrizMatricial(
+          "Matriz aumentada",
+          paso.matriz
+        );
+      });
+
+
+      // 5. Calcular los coeficientes:
+      // a = A^-1 * Y.
+
+      const coeficientes = inversa.map(fila =>
+        fila.reduce(
+          (suma, valor, j) => suma + valor * vectorY[j],
+          0
+        )
+      );
+
+      if (!coeficientes.every(Number.isFinite)) {
+        errorMatricial(
+          "El cálculo produjo valores no válidos. Revisa los datos."
+        );
+        return;
+      }
+
+      // Evaluar el polinomio mediante el esquema de Horner.
+
+      function evaluarPolinomio(x) {
+        let total = coeficientes[n - 1];
+
+        for (let i = n - 2; i >= 0; i--) {
+          total = total * x + coeficientes[i];
+        }
+
+        return total;
+      }
+
+      const resultado = evaluarPolinomio(xObjetivo);
+
+      if (!Number.isFinite(resultado)) {
+        errorMatricial(
+          "No se pudo calcular un resultado válido para ese valor de x."
+        );
+        return;
+      }
+
+      // 6. Mostrar el resultado.
+
+      agregarTituloMatricial("Resultado del método matricial");
+
+      const resumen = document.createElement("p");
+      resumen.textContent =
+        `Archivo: ${nombreArchivo} · Puntos utilizados: ${n}`;
+      resultadoMatricial.appendChild(resumen);
+
+      const valorFinal = document.createElement("p");
+      valorFinal.className = "valor-final";
+      valorFinal.textContent =
+        `P(${formatoMatricial(xObjetivo)}) = ${
+          resultado.toLocaleString("es-PE", {
+            maximumSignificantDigits: 12
+          })
+        }`;
+      resultadoMatricial.appendChild(valorFinal);
+
+      // 7. Mostrar el sistema matricial.
+
+      agregarTituloMatricial("Sistema de ecuaciones");
+
+      agregarFormulaMatricial(
+        "A\\,\\mathbf{a}=\\mathbf{y}"
+      );
+
+      mostrarMatrizMatricial(
+        "Matriz de Vandermonde A",
+        A
+      );
+
+      mostrarMatrizMatricial(
+        "Vector de valores y",
+        vectorY.map(valor => [valor])
+      );
+
+      // 8. Mostrar la matriz inversa.
+
+      agregarTituloMatricial("Matriz inversa");
+
+      agregarFormulaMatricial(
+        "\\mathbf{a}=A^{-1}\\mathbf{y}"
+      );
+
+      mostrarMatrizMatricial(
+        "Matriz inversa A⁻¹",
+        inversa
+      );
+
+      // 9. Mostrar los coeficientes.
+
+      mostrarMatrizMatricial(
+        "Vector de coeficientes",
+        coeficientes.map(valor => [valor])
+      );
+
+      const listaCoeficientes = document.createElement("p");
+
+      listaCoeficientes.textContent = coeficientes
+        .map(
+          (valor, i) =>
+            `a${i} = ${formatoMatricial(valor)}`
+        )
+        .join(" · ");
+
+      resultadoMatricial.appendChild(listaCoeficientes);
+
+      // 10. Construir el polinomio en LaTeX.
+
+      function terminoLatex(valor, orden) {
+        const absoluto =
+          formatoMatricial(Math.abs(valor));
+
+        if (orden === 0) return absoluto;
+        if (orden === 1) return `${absoluto}x`;
+
+        return `${absoluto}x^{${orden}}`;
+      }
+
+      let polinomio = "";
+
+      coeficientes.forEach((valor, orden) => {
+        if (Math.abs(valor) < 1e-12) return;
+
+        if (polinomio !== "") {
+          polinomio += valor < 0 ? "-" : "+";
+        } else if (valor < 0) {
+          polinomio += "-";
+        }
+
+        polinomio += terminoLatex(valor, orden);
+      });
+
+      if (polinomio === "") polinomio = "0";
+
+      agregarTituloMatricial("Polinomio interpolante");
+
+      agregarFormulaMatricial(
+        "P(x)=" + polinomio
+      );
+
+      // 11. Dibujar la gráfica.
+
+      agregarTituloMatricial("Gráfica de interpolación");
+
+      const contenedorGrafica =
+        document.createElement("div");
+
+      contenedorGrafica.style.position = "relative";
+      contenedorGrafica.style.width = "100%";
+      contenedorGrafica.style.height = "350px";
+
+      const canvas = document.createElement("canvas");
+
+      canvas.setAttribute(
+        "aria-label",
+        "Gráfica del polinomio interpolante matricial"
+      );
+
+      contenedorGrafica.appendChild(canvas);
+      resultadoMatricial.appendChild(contenedorGrafica);
+
+      if (typeof Chart === "undefined") {
+        const aviso = document.createElement("p");
+
+        aviso.textContent =
+          "No se pudo cargar Chart.js. Comprueba tu conexión.";
+
+        resultadoMatricial.appendChild(aviso);
+      } else {
+        if (window.graficaMatricial) {
+          window.graficaMatricial.destroy();
+        }
+
+        const minimoX = puntos[0].x;
+        const maximoX = puntos[n - 1].x;
+        const curva = [];
+        const muestras = 150;
+
+        for (let i = 0; i <= muestras; i++) {
+          const x =
+            minimoX + (maximoX - minimoX) * i / muestras;
+
+          curva.push({
+            x,
+            y: evaluarPolinomio(x)
+          });
+        }
+
+        window.graficaMatricial = new Chart(canvas, {
+          type: "scatter",
+
+          data: {
+            datasets: [
+              {
+                label: "Polinomio matricial",
+                data: curva,
+                showLine: true,
+                pointRadius: 0,
+                borderColor: "#173653",
+                borderWidth: 3
+              },
+              {
+                label: "Puntos originales",
+                data: puntos.map(p => ({
+                  x: p.x,
+                  y: p.y
+                })),
+                showLine: false,
+                pointRadius: 5,
+                pointBackgroundColor: "#ffffff",
+                pointBorderColor: "#173653",
+                pointBorderWidth: 2
+              },
+              {
+                label: "Valor calculado",
+                data: [{
+                  x: xObjetivo,
+                  y: resultado
+                }],
+                showLine: false,
+                pointRadius: 7,
+                pointBackgroundColor: "#c5a04b",
+                pointBorderColor: "#173653",
+                pointBorderWidth: 2
+              }
+            ]
+          },
+
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            scales: {
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "x"
+                }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: "P(x) / y"
+                }
+              }
+            },
+
+            plugins: {
+              legend: {
+                position: "bottom"
+              }
+            }
+          }
+        });
+      }
+
+      // 12. Renderizar las fórmulas con MathJax.
+
+      if (
+        window.MathJax &&
+        window.MathJax.typesetPromise
+      ) {
+        window.MathJax.typesetPromise([
+          resultadoMatricial
+        ]).catch(error => {
+          console.error(
+            "Error al renderizar las fórmulas matriciales:",
+            error
+          );
+        });
+      }
+    });
+
+    // ===== SPLINES CÚBICOS NATURALES =====
+
+    const botonSpline =
+      document.getElementById("botonSpline");
+
+    const valorInterpolarSpline =
+      document.getElementById("valorInterpolarSpline");
+
+    const resultadoSpline =
+      document.getElementById("resultadoSpline");
+
+    botonSpline.addEventListener("click", () => {
+      resultadoSpline.hidden = false;
+      resultadoSpline.replaceChildren();
+
+      function errorSpline(mensaje) {
+        resultadoSpline.replaceChildren();
+
+        const p = document.createElement("p");
+        p.className = "estado-error";
+        p.textContent = mensaje;
+        resultadoSpline.appendChild(p);
+      }
+
+      function formatoSpline(numero) {
+        if (Math.abs(numero) < 1e-12) return "0";
+        return Number(numero.toPrecision(8)).toString();
+      }
+
+      function tituloSpline(texto) {
+        const h3 = document.createElement("h3");
+        h3.textContent = texto;
+        resultadoSpline.appendChild(h3);
+      }
+
+      function formulaSpline(latex) {
+        const div = document.createElement("div");
+        div.className = "formula-matematica";
+        div.textContent = "\\[" + latex + "\\]";
+        resultadoSpline.appendChild(div);
+      }
+
+      // 1. Validar los datos.
+      if (filas.length < 2) {
+        errorSpline("Carga un archivo con al menos dos puntos.");
+        return;
+      }
+
+      const indiceX = Number(columnaX.value);
+      const indiceY = Number(columnaY.value);
+      const xObjetivo = Number(valorInterpolarSpline.value);
+
+      if (indiceX === indiceY) {
+        errorSpline("Selecciona columnas diferentes para x e y.");
+        return;
+      }
+
+      if (
+        valorInterpolarSpline.value.trim() === "" ||
+        !Number.isFinite(xObjetivo)
+      ) {
+        errorSpline("Introduce un valor numérico válido para x.");
+        return;
+      }
+
+      // 2. Obtener y ordenar los puntos.
+      const puntos = [];
+
+      for (const fila of filas) {
+        const x = convertirNumero(fila.valores[indiceX]);
+        const y = convertirNumero(fila.valores[indiceY]);
+
+        if (
+          x === null || y === null ||
+          !Number.isFinite(x) || !Number.isFinite(y)
+        ) {
+          errorSpline(
+            `La fila ${fila.numero} contiene valores vacíos o no numéricos.`
+          );
+          return;
+        }
+
+        puntos.push({ x, y });
+      }
+
+      puntos.sort((a, b) => a.x - b.x);
+
+      for (let i = 1; i < puntos.length; i++) {
+        if (puntos[i].x === puntos[i - 1].x) {
+          errorSpline("Hay valores x duplicados. Corrige los datos.");
+          return;
+        }
+      }
+
+      const n = puntos.length;
+      const intervalos = n - 1;
+
+      // El spline se evalúa dentro del intervalo de los datos.
+      if (
+        xObjetivo < puntos[0].x ||
+        xObjetivo > puntos[n - 1].x
+      ) {
+        errorSpline(
+          `El valor de x debe estar entre ${puntos[0].x} y ${puntos[n - 1].x}.`
+        );
+        return;
+      }
+
+      const h = [];
+      const pendientes = [];
+
+      for (let i = 0; i < intervalos; i++) {
+        h[i] = puntos[i + 1].x - puntos[i].x;
+
+        pendientes[i] =
+          (puntos[i + 1].y - puntos[i].y) / h[i];
+      }
+
+      // 3. Calcular las segundas derivadas M.
+      // Condiciones naturales: M[0] = M[n-1] = 0.
+      const M = Array(n).fill(0);
+
+      if (n > 2) {
+        const cantidad = n - 2;
+        const diagonal = [];
+        const superior = [];
+        const inferior = [];
+        const termino = [];
+
+        for (let j = 0; j < cantidad; j++) {
+          const i = j + 1;
+
+          inferior[j] = j === 0 ? 0 : h[i - 1];
+          diagonal[j] = 2 * (h[i - 1] + h[i]);
+          superior[j] = j === cantidad - 1 ? 0 : h[i];
+
+          termino[j] =
+            6 * (pendientes[i] - pendientes[i - 1]);
+        }
+
+        // Eliminación hacia adelante.
+        for (let i = 1; i < cantidad; i++) {
+          const factor = inferior[i] / diagonal[i - 1];
+
+          diagonal[i] -= factor * superior[i - 1];
+          termino[i] -= factor * termino[i - 1];
+        }
+
+        // Sustitución hacia atrás.
+        M[n - 2] =
+          termino[cantidad - 1] / diagonal[cantidad - 1];
+
+        for (let j = cantidad - 2; j >= 0; j--) {
+          M[j + 1] =
+            (termino[j] - superior[j] * M[j + 2]) /
+            diagonal[j];
+        }
+      }
+
+      // 4. Calcular los coeficientes de cada tramo.
+      // S_i(x) = a + b(x-x_i) + c(x-x_i)^2 + d(x-x_i)^3.
+      const tramos = [];
+
+      for (let i = 0; i < intervalos; i++) {
+        const a = puntos[i].y;
+
+        const b =
+          pendientes[i] -
+          h[i] * (2 * M[i] + M[i + 1]) / 6;
+
+        const c = M[i] / 2;
+
+        const d = (M[i + 1] - M[i]) / (6 * h[i]);
+
+        tramos.push({
+          inicio: puntos[i].x,
+          fin: puntos[i + 1].x,
+          a, b, c, d
+        });
+      }
+
+      // 5. Evaluar el tramo correspondiente.
+      function buscarTramo(x) {
+        for (let i = 0; i < tramos.length; i++) {
+          if (x <= tramos[i].fin) return tramos[i];
+        }
+
+        return tramos[tramos.length - 1];
+      }
+
+      function evaluarSpline(x) {
+        const tramo = buscarTramo(x);
+        const t = x - tramo.inicio;
+
+        return tramo.a +
+          tramo.b * t +
+          tramo.c * t * t +
+          tramo.d * t * t * t;
+      }
+
+      const tramoObjetivo = buscarTramo(xObjetivo);
+      const resultado = evaluarSpline(xObjetivo);
+
+      if (
+        !Number.isFinite(resultado) ||
+        !M.every(Number.isFinite)
+      ) {
+        errorSpline("No se pudo calcular un resultado válido.");
+        return;
+      }
+
+      // 6. Mostrar el resultado.
+      tituloSpline("Resultado de splines cúbicos naturales");
+
+      const resumen = document.createElement("p");
+      resumen.textContent =
+        `Archivo: ${nombreArchivo} · Puntos: ${n}`;
+      resultadoSpline.appendChild(resumen);
+
+      const valorFinal = document.createElement("p");
+      valorFinal.className = "valor-final";
+      valorFinal.textContent =
+        `S(${formatoSpline(xObjetivo)}) = ${formatoSpline(resultado)}`;
+      resultadoSpline.appendChild(valorFinal);
+
+      tituloSpline("Condiciones naturales");
+      formulaSpline("M_0=0,\\qquad M_{n-1}=0");
+
+      // 7. Mostrar las segundas derivadas.
+      tituloSpline("Segundas derivadas en los puntos");
+
+      const tablaM = document.createElement("table");
+      tablaM.className = "matriz-tabla";
+
+      const cabeza = document.createElement("thead");
+      cabeza.innerHTML =
+        "<tr><th>i</th><th>xᵢ</th><th>yᵢ</th><th>Mᵢ</th></tr>";
+      tablaM.appendChild(cabeza);
+
+      const cuerpoM = document.createElement("tbody");
+
+      puntos.forEach((p, i) => {
+        const tr = document.createElement("tr");
+
+        [
+          i,
+          formatoSpline(p.x),
+          formatoSpline(p.y),
+          formatoSpline(M[i])
+        ].forEach(valor => {
+          const td = document.createElement("td");
+          td.textContent = valor;
+          tr.appendChild(td);
+        });
+
+        cuerpoM.appendChild(tr);
+      });
+
+      tablaM.appendChild(cuerpoM);
+      resultadoSpline.appendChild(tablaM);
+
+      // 8. Mostrar los polinomios por tramos.
+      tituloSpline("Polinomios cúbicos por tramos");
+
+      tramos.forEach((tramo, i) => {
+        const subtitulo = document.createElement("h4");
+        subtitulo.textContent =
+          `Tramo ${i + 1}: [${formatoSpline(tramo.inicio)}, ${formatoSpline(tramo.fin)}]`;
+        resultadoSpline.appendChild(subtitulo);
+
+        const desplazamiento =
+          `(x-${formatoSpline(tramo.inicio)})`;
+
+        const terminos = [
+          { valor: tramo.a, texto: "" },
+          { valor: tramo.b, texto: desplazamiento },
+          { valor: tramo.c, texto: desplazamiento + "^2" },
+          { valor: tramo.d, texto: desplazamiento + "^3" }
+        ];
+
+        let polinomio = "";
+
+        terminos.forEach((termino, j) => {
+          if (Math.abs(termino.valor) < 1e-12) return;
+
+          const signo = termino.valor < 0 ? "-" : "+";
+          const valor = formatoSpline(Math.abs(termino.valor));
+
+          if (polinomio === "") {
+            polinomio =
+              (termino.valor < 0 ? "-" : "") +
+              valor + termino.texto;
+          } else {
+            polinomio += signo + valor + termino.texto;
+          }
+        });
+
+        if (!polinomio) polinomio = "0";
+
+        formulaSpline(`S_${i}(x)=${polinomio}`);
+      });
+
+      // 9. Mostrar la evaluación en el tramo seleccionado.
+      tituloSpline("Evaluación en el tramo seleccionado");
+
+      const t = xObjetivo - tramoObjetivo.inicio;
+
+      formulaSpline(
+        `S(x)=${formatoSpline(tramoObjetivo.a)}` +
+        `+(${formatoSpline(tramoObjetivo.b)})(${formatoSpline(t)})` +
+        `+(${formatoSpline(tramoObjetivo.c)})(${formatoSpline(t)})^2` +
+        `+(${formatoSpline(tramoObjetivo.d)})(${formatoSpline(t)})^3`
+      );
+
+      // 10. Dibujar la curva y los puntos.
+      tituloSpline("Gráfica del spline");
+
+      const contenedorGrafica = document.createElement("div");
+      contenedorGrafica.style.position = "relative";
+      contenedorGrafica.style.width = "100%";
+      contenedorGrafica.style.height = "350px";
+
+      const canvas = document.createElement("canvas");
+      canvas.setAttribute(
+        "aria-label",
+        "Gráfica de interpolación por splines cúbicos naturales"
+      );
+
+      contenedorGrafica.appendChild(canvas);
+      resultadoSpline.appendChild(contenedorGrafica);
+
+      if (typeof Chart === "undefined") {
+        const aviso = document.createElement("p");
+        aviso.textContent =
+          "No se pudo cargar Chart.js. Comprueba tu conexión.";
+        resultadoSpline.appendChild(aviso);
+      } else {
+        if (window.graficaSpline) {
+          window.graficaSpline.destroy();
+        }
+
+        const curva = [];
+        const muestrasPorTramo = 40;
+
+        tramos.forEach(tramo => {
+          for (let j = 0; j <= muestrasPorTramo; j++) {
+            const x = tramo.inicio +
+              (tramo.fin - tramo.inicio) *
+              j / muestrasPorTramo;
+
+            curva.push({ x, y: evaluarSpline(x) });
+          }
+        });
+
+        window.graficaSpline = new Chart(canvas, {
+          type: "scatter",
+          data: {
+            datasets: [
+              {
+                label: "Spline cúbico natural",
+                data: curva,
+                showLine: true,
+                pointRadius: 0,
+                borderColor: "#173653",
+                borderWidth: 3
+              },
+              {
+                label: "Puntos originales",
+                data: puntos.map(p => ({ x: p.x, y: p.y })),
+                showLine: false,
+                pointRadius: 5,
+                pointBackgroundColor: "#ffffff",
+                pointBorderColor: "#173653",
+                pointBorderWidth: 2
+              },
+              {
+                label: "Valor calculado",
+                data: [{ x: xObjetivo, y: resultado }],
+                showLine: false,
+                pointRadius: 7,
+                pointBackgroundColor: "#c5a04b",
+                pointBorderColor: "#173653",
+                pointBorderWidth: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                type: "linear",
+                title: { display: true, text: "x" }
+              },
+              y: {
+                title: { display: true, text: "S(x) / y" }
+              }
+            },
+            plugins: {
+              legend: { position: "bottom" }
+            }
+          }
+        });
+      }
+
+      // 11. Renderizar las fórmulas.
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([
+          resultadoSpline
+        ]).catch(error => {
+          console.error(
+            "Error al renderizar las fórmulas de splines:",
+            error
+          );
+        });
+      }
+    });
+
+
+
+  </script>
+
+
+
+</body>
+</html>
